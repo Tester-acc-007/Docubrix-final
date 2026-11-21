@@ -674,6 +674,138 @@ function App() {
   )
 }
 
+function NotificationMenu({ align = 'right' }) {
+  const [open, setOpen] = useState(false)
+  const [unread, setUnread] = useState(3)
+  const [items, setItems] = useState([
+    {
+      id: 1,
+      title: '14-Class ML Classifier Online',
+      desc: 'TF-IDF + Logistic Regression model active with calibrated probability scoring.',
+      time: 'Just now',
+      unread: true,
+      tag: 'ML Model',
+      tagColor: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+    },
+    {
+      id: 2,
+      title: 'Spend Gate Policy Active',
+      desc: 'High-value spend gate guarding invoices exceeding ₹1,000 threshold.',
+      time: '15m ago',
+      unread: true,
+      tag: 'Workflow',
+      tagColor: 'bg-amber-50 text-amber-700 border-amber-200',
+    },
+    {
+      id: 3,
+      title: 'PHI Shield Guarding Records',
+      desc: 'HIPAA confidentiality policy active for prescriptions and clinical lab reports.',
+      time: '1h ago',
+      unread: true,
+      tag: 'Security',
+      tagColor: 'bg-purple-50 text-purple-700 border-purple-200',
+    },
+    {
+      id: 4,
+      title: 'Production Schema Synchronized',
+      desc: 'Database connection verified with Singapore regional routing.',
+      time: '3h ago',
+      unread: false,
+      tag: 'System',
+      tagColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    },
+  ])
+
+  const menuRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const markAllRead = () => {
+    setItems((prev) => prev.map((item) => ({ ...item, unread: false })))
+    setUnread(0)
+  }
+
+  return (
+    <div className="relative inline-block" ref={menuRef}>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="relative h-8 w-8 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
+        onClick={() => setOpen((prev) => !prev)}
+        title="Notifications"
+        type="button"
+      >
+        <Bell className="h-4 w-4" />
+        {unread > 0 && (
+          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
+        )}
+      </Button>
+
+      {open && (
+        <div
+          className={cn(
+            'absolute top-full mt-2 w-80 sm:w-96 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-100',
+            align === 'left' ? 'left-0' : 'right-0'
+          )}
+        >
+          <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100 px-1">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-sm text-slate-900">Notifications</span>
+              {unread > 0 && (
+                <span className="rounded-full bg-red-50 text-red-600 px-2 py-0.5 text-[10px] font-bold">
+                  {unread} new
+                </span>
+              )}
+            </div>
+            {unread > 0 && (
+              <button
+                type="button"
+                onClick={markAllRead}
+                className="text-xs text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
+              >
+                Mark all as read
+              </button>
+            )}
+          </div>
+
+          <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className={cn(
+                  'p-2.5 rounded-xl transition-colors text-left border',
+                  item.unread ? 'bg-blue-50/40 border-blue-100' : 'bg-slate-50/50 border-slate-100'
+                )}
+              >
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <span className={cn('text-[10px] font-bold px-1.5 py-0.5 rounded border', item.tagColor)}>
+                    {item.tag}
+                  </span>
+                  <span className="text-[10px] text-slate-400">{item.time}</span>
+                </div>
+                <div className="text-xs font-semibold text-slate-800">{item.title}</div>
+                <div className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-2.5 mt-2.5 border-t border-slate-100 text-center">
+            <span className="text-[10px] text-slate-400">All systems active • Region: Singapore</span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function ProtectedLayout({ user, children, mobileOpen, setMobileOpen, onLogout }) {
   const location = useLocation()
   const currentTitle = appShellNav.find((item) => item.path === location.pathname)?.label || 'Dashboard'
@@ -722,9 +854,7 @@ function ProtectedLayout({ user, children, mobileOpen, setMobileOpen, onLogout }
                   <div className="text-xs capitalize text-slate-500">{user.role}</div>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Bell className="h-4 w-4" />
-              </Button>
+              <NotificationMenu align="left" />
             </div>
           </div>
         </aside>
@@ -755,10 +885,7 @@ function ProtectedLayout({ user, children, mobileOpen, setMobileOpen, onLogout }
                   <Search className="h-4 w-4 text-slate-500" />
                   <input className="w-40 border-0 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none" placeholder="Search" />
                 </div>
-                <Button variant="ghost" size="icon" className="relative">
-                  <Bell className="h-4 w-4" />
-                  <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
-                </Button>
+                <NotificationMenu align="right" />
                 <Link to="/profile" className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-2 py-1.5">
                   <Avatar initials={user.name.slice(0, 2).toUpperCase()} className="h-8 w-8 bg-gradient-to-br from-blue-600 to-indigo-400 text-xs" />
                   <div className="hidden text-left text-sm md:block">
