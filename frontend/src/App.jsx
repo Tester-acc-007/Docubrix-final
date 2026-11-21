@@ -184,24 +184,24 @@ function LandingPage({ user }) {
       aiAnswer: 'The total invoice amount is $4,250.00 USD due on Dec 15, 2026. Because this exceeds the $3,000 spend threshold rule, DocuBrix has routed it to the Review Queue for CFO sign-off [Page 1, Line 18].',
     },
     academic: {
-      name: 'Official Academic Transcript — USAR',
+      name: 'Official Academic Transcript & Grade Report',
       domain: 'Academic',
       color: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
       accent: 'blue',
       ruleBadge: 'Auto-Verified (University Registrar Seal Validated)',
       ruleColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
       confidence: '99.1%',
-      summary: 'Undergraduate academic grade card from Guru Gobind Singh Indraprastha University (USAR East Delhi Campus).',
+      summary: 'Undergraduate academic grade card and verified cumulative performance transcript from accredited institute.',
       fields: [
-        { label: 'Student Name', value: 'Pranav Bisht' },
-        { label: 'Enrollment No.', value: '02719051723' },
-        { label: 'Programme', value: 'B.Tech. IIOT (Semester VII)' },
-        { label: 'Cumulative CGPA', value: '8.92 / 10.0' },
-        { label: 'Institution', value: 'USAR, GGSIPU' },
+        { label: 'Student Name', value: 'Alex Morgan' },
+        { label: 'Enrollment No.', value: 'ENR-2024-88410' },
+        { label: 'Programme', value: 'B.S. Computer Science (Semester VII)' },
+        { label: 'Cumulative CGPA', value: '3.92 / 4.0' },
+        { label: 'Institution', value: 'National Institute of Technology' },
         { label: 'Registrar Seal', value: 'Cryptographically Verified' },
       ],
       aiQuestion: 'What is the student\'s CGPA and enrollment status?',
-      aiAnswer: 'Student Pranav Bisht (Enrollment 02719051723) has a cumulative CGPA of 8.92/10.0 in B.Tech IIOT Semester VII. The official seal was validated with 99.1% confidence [Page 1, Table 2].',
+      aiAnswer: 'Student Alex Morgan (Enrollment ENR-2024-88410) has a cumulative CGPA of 3.92/4.0 in B.S. Computer Science Semester VII. The official seal was validated with 99.1% confidence [Page 1, Table 2].',
     },
     medical: {
       name: 'Specialist Clinical Prescription & Lab Rx',
@@ -244,24 +244,24 @@ function LandingPage({ user }) {
       aiAnswer: 'The NDA defines a 3-year (36 months) non-disclosure obligation under the jurisdiction of the High Court of Delhi. Counter-signature by Receiving Party is pending review [Page 3, Section 8].',
     },
     administrative: {
-      name: 'Executive Office Circular #2026/CIR-108',
+      name: 'Executive Office Circular #ADM-2026-108',
       domain: 'Administrative',
       color: 'border-sky-500/30 bg-sky-500/10 text-sky-400',
       accent: 'sky',
       ruleBadge: 'Auto-Indexed to Knowledge Base & Broadcast',
       ruleColor: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
       confidence: '98.7%',
-      summary: 'Institutional memorandum regarding Minor Project B.Tech evaluation timelines, rubrics, and formatting.',
+      summary: 'Executive operational circular regarding department compliance standards, review schedules, and formatting.',
       fields: [
-        { label: 'Circular Ref', value: 'USAR/2026/CIR-108' },
-        { label: 'Issuing Authority', value: 'Office of the Dean, USAR' },
-        { label: 'Target Audience', value: 'Faculty, Evaluators & Students' },
-        { label: 'Subject Matter', value: 'ARP 455 Evaluation Protocol' },
+        { label: 'Circular Ref', value: 'ADM/2026/CIR-108' },
+        { label: 'Issuing Authority', value: 'Office of General Administration' },
+        { label: 'Target Audience', value: 'Department Heads & Operational Units' },
+        { label: 'Subject Matter', value: 'Operational Evaluation Protocol' },
         { label: 'Effective Date', value: 'Immediate Effect (Nov 2026)' },
-        { label: 'Distribution', value: 'Campus Intranet Broadcast' },
+        { label: 'Distribution', value: 'Corporate Intranet Broadcast' },
       ],
       aiQuestion: 'Who issued this circular and what are the main deadlines?',
-      aiAnswer: 'Circular USAR/2026/CIR-108 was issued by the Dean Office, USAR, mandating evaluation standards and minimum 30-page spiral-bound report submissions for ARP 455 [Page 1, Item 4].',
+      aiAnswer: 'Circular ADM/2026/CIR-108 was issued by the Office of General Administration, mandating operational compliance standards and project review timetables [Page 1, Item 4].',
     },
   }
 
@@ -588,14 +588,16 @@ function LandingPage({ user }) {
             <img src="/docubrix-logo.png" alt="DocuBrix" className="h-6 w-auto object-contain rounded bg-white/95 px-1.5 py-0.5" />
             <span className="font-semibold text-slate-300">DocuBrix</span>
             <span className="text-slate-600">|</span>
-            <span className="text-slate-400">B.Tech. Minor Project (ARP 455) &mdash; USAR, GGSIPU</span>
+            <span className="text-slate-400">Intelligent Document Processing &amp; Workflow Automation</span>
           </div>
-          <div className="flex items-center gap-4 text-slate-400">
-            <span>Student: <strong>Pranav Bisht</strong> (02719051723)</span>
+          <div className="flex items-center gap-6 text-slate-400">
+            <a href="#interactive-demo" className="hover:text-slate-200 transition-colors">Features</a>
             <span>&bull;</span>
-            <span>Supervisor: <strong>Dr. Bhanu Prakash Joshi</strong></span>
+            <span className="hover:text-slate-200 transition-colors">Security &amp; PHI Shield</span>
+            <span>&bull;</span>
+            <span className="hover:text-slate-200 transition-colors">API Architecture</span>
           </div>
-          <p className="text-slate-500">&copy; 2026 DocuBrix. All rights reserved.</p>
+          <p className="text-slate-500">&copy; 2026 DocuBrix Inc. All rights reserved.</p>
         </div>
       </footer>
     </div>
@@ -1066,32 +1068,31 @@ GSTIN: 07AAAAA0000A1Z5`,
   },
   {
     id: 'academic',
-    label: 'Academic Transcript (USAR)',
+    label: 'Academic Transcript',
     icon: '🎓',
     badge: 'Academic',
     badgeClass: 'bg-blue-50 text-blue-700 border-blue-200',
-    filename: 'Sample_Academic_Transcript_USAR.txt',
-    text: `GURU GOBIND SINGH INDRAPRASTHA UNIVERSITY
-UNIVERSITY SCHOOL OF AUTOMATION & ROBOTICS (USAR)
-East Delhi Campus, Surajmal Vihar, Delhi - 110092
+    filename: 'Sample_Academic_Transcript.txt',
+    text: `NATIONAL INSTITUTE OF TECHNOLOGY & SCIENCES
+CAMPUS REGISTRAR & ACADEMIC EVALUATION DIVISION
 ACADEMIC TRANSCRIPT / GRADE REPORT
 Date: 2026-11-15
 
-Candidate Name: Pranav Bisht
-Enrollment No: 03119011922
-University: Guru Gobind Singh Indraprastha University (USAR)
-Course: Bachelor of Technology (B.Tech) - Artificial Intelligence & Data Science
+Candidate Name: Alex Morgan
+Enrollment No: 02219051720
+University: National Institute of Technology & Sciences
+Course: Bachelor of Technology (B.Tech) - Computer Science
 Semester: VII (Academic Year 2026)
 
 Course Code | Course Title | Credits | Grade
-AIDS-401   | Deep Learning & Neural Architectures | 4 | A+
-AIDS-403   | Natural Language Processing & LLMs   | 4 | O
-AIDS-405   | Cloud Computing & Microservices      | 3 | A+
-AIDS-407   | Document AI & Workflow Automation    | 4 | O
-AIDS-451   | Minor Project Evaluation I           | 4 | O
+CS-401      | Deep Learning & Neural Architectures | 4 | A+
+CS-403      | Natural Language Processing & LLMs   | 4 | O
+CS-405      | Cloud Computing & Microservices      | 3 | A+
+CS-407      | Document AI & Workflow Automation    | 4 | O
+CS-451      | Autonomous Systems Capstone          | 4 | O
 
 Semester SGPA: 9.20
-Cumulative CGPA: 8.85
+Cumulative CGPA: 9.15
 Result: Passed with Distinction`,
   },
   {
@@ -1140,27 +1141,27 @@ Receiving Party: Horizon Ventures Inc., San Francisco, CA, USA.
 Term: The non-disclosure obligations shall survive for three (3) years from the Effective Date.
 Governing Law: This Agreement shall be construed in accordance with Delaware law.
 
-Signed for Disclosing Party: Pranav Bisht, Lead Engineer
+Signed for Disclosing Party: Alex Morgan, Lead Engineer
 Signed for Receiving Party: Marcus Vance, Managing Partner`,
   },
   {
     id: 'administrative',
-    label: 'Official University Notice',
+    label: 'Official Executive Notice',
     icon: '📋',
     badge: 'Administrative',
     badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',
-    filename: 'Sample_Official_Notice_GGSIPU.txt',
-    text: `GURU GOBIND SINGH INDRAPRASTHA UNIVERSITY
+    filename: 'Sample_Official_Notice.txt',
+    text: `CENTRAL REGISTRATION & ADMINISTRATIVE COUNCIL
 OFFICE OF THE REGISTRAR / GENERAL ADMINISTRATION
-Sector-16C, Dwarka, New Delhi - 110078
+Sector 4, Business District, New Delhi - 110001
 OFFICE MEMORANDUM / OFFICIAL NOTICE
 
-Reference No: GGSIPU/GA/2026/NOT-881
+Reference No: ADM/GA/2026/NOT-881
 Date: 2026-09-08
 Subject: Autonomous Examination Scheduling & Project Review Timetable
 
-To: All Deans, Directors, Faculty Members, and Departmental Heads
-In accordance with the order of the Competent Authority, the Academic Council has approved the updated evaluation timetable for ARP 455 Minor Project evaluations. All departments shall comply with immediate effect.
+To: All Department Directors, Senior Leads, and Operational Managers
+In accordance with executive operational guidelines, the Administrative Council has approved the updated scheduling timetable and operational review guidelines. All departments shall comply with immediate effect.
 By Order of the Competent Authority
 Registrar / Joint Secretary`,
   },
@@ -1171,9 +1172,9 @@ Registrar / Joint Secretary`,
     badge: 'General',
     badgeClass: 'bg-slate-50 text-slate-700 border-slate-200',
     filename: 'Sample_Candidate_Resume.txt',
-    text: `PRANAV BISHT
-Email: pranav.bisht@example.com | Phone: +91-9876543210 | GitHub: github.com/Tester-acc-007
-LinkedIn: linkedin.com/in/pranavbisht
+    text: `ALEX MORGAN
+Email: alex.morgan@example.com | Phone: +1 (555) 019-2834 | GitHub: github.com/alexmorgan-dev
+LinkedIn: linkedin.com/in/alexmorgan
 
 PROFESSIONAL SUMMARY
 Full Stack Software Engineer with expertise in building FastAPI microservices, React single-page applications, and document intelligence workflows.
@@ -1188,8 +1189,8 @@ Software Engineering Intern — Cloud Automation Labs (2025 - Present)
 • Implemented JWT token security with role-based access control.
 
 EDUCATION
-Bachelor of Technology in Computer Science & Automation (USAR)
-CGPA: 8.85 / 10.0 (2022 - 2026)`,
+Bachelor of Science in Computer Science & Automation
+GPA: 3.9 / 4.0 (2022 - 2026)`,
   },
 ]
 
