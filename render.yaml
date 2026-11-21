@@ -15,6 +15,10 @@ services:
         value: production
       - key: AUTH_SECRET
         value: docubrix-prod-secret-auth-key-2026-fixed-token-secure
+      - key: GEMINI_MODEL
+        value: gemini-1.5-flash
+      - key: EMBEDDING_MODEL
+        value: text-embedding-004
 
   # 2. React + Vite Frontend (Free Fast Static Site with SPA routing)
   - type: web
