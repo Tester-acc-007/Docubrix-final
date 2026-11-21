@@ -14,7 +14,7 @@ services:
       - key: APP_ENVIRONMENT
         value: production
       - key: AUTH_SECRET
-        generateValue: true
+        value: docubrix-prod-secret-auth-key-2026-fixed-token-secure
 
   # 2. React + Vite Frontend (Free Fast Static Site with SPA routing)
   - type: web

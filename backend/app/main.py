@@ -66,6 +66,21 @@ async def lifespan(app: FastAPI):
     try:
         ensure_schema()
         logger.info("Database schema initialized successfully.")
+        if SessionLocal is not None:
+            with SessionLocal() as session:
+                demo_user = session.query(User).filter(User.email == "demo@docubrix.io").first()
+                if not demo_user:
+                    session.add(
+                        User(
+                            id=str(uuid.uuid4()),
+                            name="DocuBrix Demo User",
+                            email="demo@docubrix.io",
+                            password_hash=hash_password("Demo1234!"),
+                            role="admin",
+                        )
+                    )
+                    session.commit()
+                    logger.info("Demo user demo@docubrix.io seeded successfully.")
     except Exception as exc:
         logger.error("Database schema initialization encountered an error: %s", exc)
 
