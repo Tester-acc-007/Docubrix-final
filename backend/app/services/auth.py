@@ -49,12 +49,14 @@ def _decode(value: str) -> bytes:
 
 
 def create_access_token(user_id: str, role: str, session_version: int = 0) -> str:
+    now = datetime.now(timezone.utc)
     payload = {
         "sub": user_id,
         "role": role,
         "session_version": session_version,
         "jti": str(uuid.uuid4()),
-        "exp": int((datetime.now(timezone.utc) + timedelta(days=7)).timestamp()),
+        "iat": int(now.timestamp()),
+        "exp": int((now + timedelta(days=7)).timestamp()),
     }
     encoded_payload = _encode(json.dumps(payload, separators=(",", ":")).encode("utf-8"))
     signature = hmac.new(AUTH_SECRET.encode("utf-8"), encoded_payload.encode("ascii"), hashlib.sha256).digest()

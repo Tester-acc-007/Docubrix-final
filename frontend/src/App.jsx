@@ -637,8 +637,8 @@ function App() {
       <Route path="/" element={<LandingPage user={user} />} />
       <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage mode="login" setUser={setUser} />} />
       <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage mode="register" setUser={setUser} />} />
-      <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage mode="forgot" setUser={setUser} />} />
-      <Route path="/reset-password" element={user ? <Navigate to="/dashboard" replace /> : <AuthPage mode="reset" setUser={setUser} />} />
+      <Route path="/forgot-password" element={<Navigate to="/login" replace />} />
+      <Route path="/reset-password" element={<Navigate to="/login" replace />} />
       <Route
         path="*"
         element={
@@ -783,8 +783,6 @@ function AuthPage({ mode, setUser }) {
   const titleMap = {
     login: 'Sign in to DocuBrix',
     register: 'Create your account',
-    forgot: 'Reset your password',
-    reset: 'Set a new password',
   }
 
   const [email, setEmail] = useState('')
@@ -794,10 +792,6 @@ function AuthPage({ mode, setUser }) {
 
   const onSubmit = async (event) => {
     event.preventDefault()
-    if (mode === 'forgot' || mode === 'reset') {
-      toast.error('Password reset is not enabled yet. Contact an administrator.')
-      return
-    }
 
     if (!email || !password || (mode === 'register' && !name)) {
       toast.error('Please complete the required fields to continue.')
@@ -823,7 +817,7 @@ function AuthPage({ mode, setUser }) {
     <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-10">
       <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
         <div className="mb-6">
-          <Link to="/login" className="inline-block">
+          <Link to="/" className="inline-block">
             <img src="/docubrix-logo.png" alt="DocuBrix" className="h-10 w-auto object-contain" />
           </Link>
           <div className="mt-1 text-sm text-slate-500">Document intelligence workspace</div>
@@ -838,34 +832,42 @@ function AuthPage({ mode, setUser }) {
           {mode === 'register' && (
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-700">Full name</label>
-              <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="Your full name" />
+              <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="Your full name" required />
             </div>
           )}
 
-          {(mode === 'login' || mode === 'register' || mode === 'forgot' || mode === 'reset') && (
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">Email address</label>
-              <Input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="name@company.com" />
-            </div>
-          )}
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">Email address</label>
+            <Input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="name@company.com" required />
+          </div>
 
-          {(mode === 'login' || mode === 'register' || mode === 'reset') && (
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">Password</label>
-              <Input value={password} onChange={(event) => setPassword(event.target.value)} type="password" placeholder="********" />
-            </div>
-          )}
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">Password</label>
+            <Input value={password} onChange={(event) => setPassword(event.target.value)} type="password" placeholder="At least 8 characters" required />
+          </div>
 
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {mode === 'login' ? 'Sign in' : mode === 'register' ? 'Create account' : mode === 'forgot' ? 'Send reset link' : 'Update password'}
+            {mode === 'login' ? 'Sign in' : 'Create account'}
           </Button>
         </form>
 
-        <div className="mt-5 flex items-center justify-between text-sm text-slate-600">
-          <Link to="/register" className="font-medium text-blue-700 hover:underline">Create account</Link>
-          <Link to="/forgot-password" className="font-medium text-blue-700 hover:underline">Forgot password</Link>
-          <Link to="/login" className="font-medium text-blue-700 hover:underline">Back to login</Link>
+        <div className="mt-6 text-center text-sm text-slate-600">
+          {mode === 'login' ? (
+            <div>
+              Don&apos;t have an account?{' '}
+              <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-500 hover:underline">
+                Create an account
+              </Link>
+            </div>
+          ) : (
+            <div>
+              Already have an account?{' '}
+              <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-500 hover:underline">
+                Sign in
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -894,13 +896,18 @@ function StatCard({ label, value, hint, accent }) {
   }
 
   return (
-    <Card className="h-full">
+    <Card className="h-full min-w-0 overflow-hidden">
       <CardContent className="p-5">
-        <div className="mb-4 flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">{label}</span>
-          <span className={cn('rounded-full px-2 py-1 text-xs font-semibold', accentMap[accent] || accentMap.slate)}>{hint}</span>
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500 truncate">{label}</span>
+          <span className={cn('rounded-full px-2 py-0.5 text-xs font-semibold shrink-0', accentMap[accent] || accentMap.slate)}>{hint}</span>
         </div>
-        <div className="text-3xl font-semibold tracking-tight text-slate-900">{value}</div>
+        <div
+          className="text-xl font-semibold tracking-tight text-slate-900 truncate"
+          title={typeof value === 'string' ? value : undefined}
+        >
+          {value}
+        </div>
       </CardContent>
     </Card>
   )
@@ -1068,12 +1075,13 @@ GSTIN: 07AAAAA0000A1Z5`,
 UNIVERSITY SCHOOL OF AUTOMATION & ROBOTICS (USAR)
 East Delhi Campus, Surajmal Vihar, Delhi - 110092
 ACADEMIC TRANSCRIPT / GRADE REPORT
+Date: 2026-11-15
 
 Candidate Name: Pranav Bisht
 Enrollment No: 03119011922
 University: Guru Gobind Singh Indraprastha University (USAR)
 Course: Bachelor of Technology (B.Tech) - Artificial Intelligence & Data Science
-Semester: 7th Semester (Academic Year 2026)
+Semester: VII (Academic Year 2026)
 
 Course Code | Course Title | Credits | Grade
 AIDS-401   | Deep Learning & Neural Architectures | 4 | A+
@@ -1094,19 +1102,19 @@ Result: Passed with Distinction`,
     badgeClass: 'bg-rose-50 text-rose-700 border-rose-200',
     filename: 'Sample_Prescription_Apollo.txt',
     text: `APOLLO HOSPITALS ENTERPRISE LTD.
-Department of Cardiology & Internal Medicine
+Hospital: Apollo Specialty Clinic, Cardiology & Internal Medicine
+Date: 2026-11-15
 PRESCRIPTION & CLINICAL SUMMARY
 
-Date: 2026-11-15
 Patient Name: Rajesh Sharma
-Age: 52 | Gender: Male
+Age: 52 years / Male
 Patient ID: MED-2026-77821
 Doctor: Dr. Arvind Mehra, MD (Cardiology)
 
 Diagnosis: Primary Hypertension & Mild Dyslipidemia
 Vitals: BP: 142/90 mmHg | Pulse: 78 bpm | SpO2: 98%
 
-Rx (Prescription):
+Rx:
 1. Tab. Telmisartan 40mg - 1 tab once daily in morning (30 days)
 2. Tab. Atorvastatin 10mg - 1 tab once daily at bedtime (30 days)
 
@@ -1121,18 +1129,67 @@ CONFIDENTIAL MEDICAL RECORD - PROTECTED HEALTH INFORMATION (PHI)`,
     badgeClass: 'bg-purple-50 text-purple-700 border-purple-200',
     filename: 'Sample_Mutual_NDA_Legal.txt',
     text: `MUTUAL NON-DISCLOSURE AND CONFIDENTIALITY AGREEMENT
+Effective Date: 2026-11-10
 
-This Mutual Non-Disclosure Agreement is entered into on 2026-11-10, by and between:
-Party A: DocuBrix Technologies Pvt. Ltd., New Delhi, India; and
-Party B: Horizon Ventures Inc., San Francisco, CA, USA.
+This Mutual Non-Disclosure Agreement is entered into on 2026-11-10, between:
+Disclosing Party: DocuBrix Technologies Pvt. Ltd., New Delhi, India
+Receiving Party: Horizon Ventures Inc., San Francisco, CA, USA.
 
 1. Purpose: Strategic evaluation of document intelligence and workflow automation systems.
 2. Confidential Information: Technical designs, algorithms, architectures, and proprietary models.
-3. Term: The non-disclosure obligations shall survive for three (3) years from the Effective Date.
-4. Governing Law: This Agreement shall be construed in accordance with Delaware law.
+Term: The non-disclosure obligations shall survive for three (3) years from the Effective Date.
+Governing Law: This Agreement shall be construed in accordance with Delaware law.
 
-Signed for Party A: Pranav Bisht, Lead Engineer
-Signed for Party B: Marcus Vance, Managing Partner`,
+Signed for Disclosing Party: Pranav Bisht, Lead Engineer
+Signed for Receiving Party: Marcus Vance, Managing Partner`,
+  },
+  {
+    id: 'administrative',
+    label: 'Official University Notice',
+    icon: '📋',
+    badge: 'Administrative',
+    badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',
+    filename: 'Sample_Official_Notice_GGSIPU.txt',
+    text: `GURU GOBIND SINGH INDRAPRASTHA UNIVERSITY
+OFFICE OF THE REGISTRAR / GENERAL ADMINISTRATION
+Sector-16C, Dwarka, New Delhi - 110078
+OFFICE MEMORANDUM / OFFICIAL NOTICE
+
+Reference No: GGSIPU/GA/2026/NOT-881
+Date: 2026-09-08
+Subject: Autonomous Examination Scheduling & Project Review Timetable
+
+To: All Deans, Directors, Faculty Members, and Departmental Heads
+In accordance with the order of the Competent Authority, the Academic Council has approved the updated evaluation timetable for ARP 455 Minor Project evaluations. All departments shall comply with immediate effect.
+By Order of the Competent Authority
+Registrar / Joint Secretary`,
+  },
+  {
+    id: 'general',
+    label: 'Candidate Software Resume',
+    icon: '💼',
+    badge: 'General',
+    badgeClass: 'bg-slate-50 text-slate-700 border-slate-200',
+    filename: 'Sample_Candidate_Resume.txt',
+    text: `PRANAV BISHT
+Email: pranav.bisht@example.com | Phone: +91-9876543210 | GitHub: github.com/Tester-acc-007
+LinkedIn: linkedin.com/in/pranavbisht
+
+PROFESSIONAL SUMMARY
+Full Stack Software Engineer with expertise in building FastAPI microservices, React single-page applications, and document intelligence workflows.
+
+TECHNICAL SKILLS
+Languages: Python, JavaScript, TypeScript, SQL
+Frameworks & Tools: FastAPI, React 18, Vite, TailwindCSS, PyTorch, Scikit-learn, PostgreSQL, Docker
+
+WORK EXPERIENCE
+Software Engineering Intern — Cloud Automation Labs (2025 - Present)
+• Built intelligent document extraction services handling multi-format inputs.
+• Implemented JWT token security with role-based access control.
+
+EDUCATION
+Bachelor of Technology in Computer Science & Automation (USAR)
+CGPA: 8.85 / 10.0 (2022 - 2026)`,
   },
 ]
 
@@ -1216,7 +1273,7 @@ function ProcessingPage() {
             <span className="text-xs text-slate-500">Click any preset to test end-to-end OCR and workflow triggers</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {DEMO_PRESETS.map((preset) => (
               <button
                 key={preset.id}
@@ -1284,26 +1341,39 @@ function ProcessingPage() {
             <StatCard
               label="Type"
               value={documentResult.document_type || 'unknown'}
-              hint={documentResult.classification?.method === 'ml' ? 'ML Classifier' : 'Rule Heuristic'}
+              hint={documentResult.category || (documentResult.classification && documentResult.classification.category) || 'Domain'}
               accent="green"
             />
             <StatCard label="Status" value={documentResult.status || 'processed'} hint="Workflow" accent="slate" />
-            <StatCard label="Confidence" value={safeFloat((documentResult.confidence || {}).overall) ? `${safeFloat((documentResult.confidence || {}).overall).toFixed(2)}` : 'N/A'} hint="Overall" accent="amber" />
+            <StatCard
+              label="Confidence"
+              value={typeof documentResult.classification?.confidence === 'number' ? `${(documentResult.classification.confidence * 100).toFixed(0)}%` : (safeFloat((documentResult.confidence || {}).overall) ? `${safeFloat((documentResult.confidence || {}).overall).toFixed(2)}` : 'N/A')}
+              hint={documentResult.classification?.method === 'ml' ? 'ML Model' : 'Overall Quality'}
+              accent="amber"
+            />
           </div>
 
           <div className="grid gap-8 xl:grid-cols-[1.3fr_0.7fr]">
             <Card>
-              <CardHeader>
-                <CardTitle>Extracted information</CardTitle>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <span>Extracted information</span>
+                  <span className={cn('text-xs font-semibold px-2 py-0.5 rounded-full border', categoryColors[documentResult.category || (documentResult.extracted_fields || {}).category || 'General'] || categoryColors.General)}>
+                    {documentResult.category || (documentResult.extracted_fields || {}).category || 'General'}
+                  </span>
+                </CardTitle>
+                <ClassificationBadge classification={documentResult.classification} documentType={documentResult.document_type} />
               </CardHeader>
               <CardContent>
                 <div className="field-grid">
-                  {Object.entries(documentResult.extracted_fields || {}).filter(([key]) => key !== 'document_type').map(([key, value]) => (
-                    <div key={key} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                      <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{key.replace('_', ' ')}</div>
-                      <div className="mt-2 text-sm font-medium text-slate-900">{value || 'Not available'}</div>
-                    </div>
-                  ))}
+                  {Object.entries(documentResult.extracted_fields || {})
+                    .filter(([key]) => key !== 'document_type' && key !== 'category')
+                    .map(([key, value]) => (
+                      <div key={key} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                        <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{key.replace(/_/g, ' ')}</div>
+                        <div className="mt-2 text-sm font-medium text-slate-900 break-words">{value || <span className="text-slate-400 font-normal italic">Not available</span>}</div>
+                      </div>
+                    ))}
                 </div>
               </CardContent>
             </Card>
@@ -1335,7 +1405,7 @@ function ProcessingPage() {
                 {Object.entries((documentResult.confidence || {}).signals || {}).map(([key, value]) => (
                   <div key={key}>
                     <div className="mb-1 flex items-center justify-between text-sm">
-                      <span className="font-medium text-slate-700">{key.replace('_', ' ')}</span>
+                      <span className="font-medium text-slate-700 capitalize">{key.replace(/_/g, ' ')}</span>
                       <span className="text-slate-500">{safeFloat(value)?.toFixed(2) || '0.00'}</span>
                     </div>
                     <div className="h-2.5 rounded-full bg-slate-200">
@@ -1353,7 +1423,7 @@ function ProcessingPage() {
               <CardContent className="space-y-4">
                 {Object.entries(manualFields).map(([key, value]) => (
                   <div key={key}>
-                    <label className="mb-1.5 block text-sm font-medium text-slate-700">{key.replace('_', ' ')}</label>
+                    <label className="mb-1.5 block text-sm font-medium text-slate-700 capitalize">{key.replace(/_/g, ' ')}</label>
                     <Input value={value || ''} onChange={(event) => setManualFields((current) => ({ ...current, [key]: event.target.value }))} />
                   </div>
                 ))}
@@ -1383,6 +1453,7 @@ function LibraryPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchMode, setSearchMode] = useState('keyword')
+  const [categoryFilter, setCategoryFilter] = useState('all')
   const [typeFilter, setTypeFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
   const [searchStatus, setSearchStatus] = useState(null)
@@ -1439,17 +1510,20 @@ function LibraryPage() {
   }, [searchQuery, searchMode, typeFilter, statusFilter, searchStatus])
 
   const filteredDocuments = documents.filter((item) => {
+    const itemCat = item.category || (item.extracted_fields || {}).category || (item.classification && item.classification.category) || 'General'
+    const catMatch = categoryFilter === 'all' || itemCat === categoryFilter
     const typeMatch = typeFilter === 'all' || (item.document_type || 'unknown') === typeFilter
     const statusMatch = statusFilter === 'all' || (item.status || 'unknown') === statusFilter
-    return typeMatch && statusMatch
+    return catMatch && typeMatch && statusMatch
   })
 
   const uniqueTypes = ['all', ...new Set(documents.map((item) => item.document_type || 'unknown'))]
   const uniqueStatuses = ['all', ...new Set(documents.map((item) => item.status || 'unknown'))]
+  const uniqueCategories = ['all', 'Financial', 'Academic', 'Legal', 'Medical', 'Administrative', 'General']
 
   return (
     <>
-      <PageHeader title="Document Library" subtitle="Search, filter, and inspect the full document corpus." />
+      <PageHeader title="Document Library" subtitle="Search, filter, and inspect the full document corpus across all domains." />
 
       <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white p-3 text-xs shadow-soft">
         <span className="font-semibold text-slate-700">Capabilities:</span>
@@ -1482,8 +1556,8 @@ function LibraryPage() {
         )}
       </div>
 
-      <div className="mb-6 grid gap-4 md:grid-cols-2">
-        <div className="md:col-span-2">
+      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+        <div className="sm:col-span-3">
           <div className="mb-1.5 flex items-center justify-between">
             <label className="text-sm font-medium text-slate-700">Search documents</label>
             <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs">
@@ -1540,18 +1614,26 @@ function LibraryPage() {
           )}
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Document type</label>
-          <Select value={typeFilter} onValueChange={setTypeFilter} placeholder="Filter by type">
-            {uniqueTypes.map((item) => (
-              <SelectItem key={item} value={item}>{item === 'all' ? 'All types' : item}</SelectItem>
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">Domain category</label>
+          <Select value={categoryFilter} onValueChange={setCategoryFilter} placeholder="Filter by domain">
+            {uniqueCategories.map((item) => (
+              <SelectItem key={item} value={item}>{item === 'all' ? 'All domains' : item}</SelectItem>
             ))}
           </Select>
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Status</label>
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">Document type</label>
+          <Select value={typeFilter} onValueChange={setTypeFilter} placeholder="Filter by type">
+            {uniqueTypes.map((item) => (
+              <SelectItem key={item} value={item}>{item === 'all' ? 'All types' : item.replace(/_/g, ' ')}</SelectItem>
+            ))}
+          </Select>
+        </div>
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">Workflow status</label>
           <Select value={statusFilter} onValueChange={setStatusFilter} placeholder="Filter by status">
             {uniqueStatuses.map((item) => (
-              <SelectItem key={item} value={item}>{item === 'all' ? 'All statuses' : item}</SelectItem>
+              <SelectItem key={item} value={item}>{item === 'all' ? 'All statuses' : item.replace(/_/g, ' ')}</SelectItem>
             ))}
           </Select>
         </div>
@@ -1570,6 +1652,7 @@ function LibraryPage() {
               <thead className="bg-slate-50 text-left text-slate-600">
                 <tr>
                   <th className="px-4 py-3">Filename</th>
+                  <th className="px-4 py-3">Domain</th>
                   <th className="px-4 py-3">Classification</th>
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3">
@@ -1580,34 +1663,42 @@ function LibraryPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {filteredDocuments.map((document) => (
-                  <tr key={document.document_id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium text-slate-900">
-                      <div>{document.filename}</div>
-                      {document.excerpts && document.excerpts.length > 0 && (
-                        <div
-                          className="mt-1 text-xs font-normal text-slate-500 max-w-md line-clamp-2 [&>mark]:bg-amber-100 [&>mark]:text-amber-900 [&>mark]:rounded [&>mark]:px-0.5"
-                          dangerouslySetInnerHTML={{ __html: document.excerpts[0] }}
-                        />
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <ClassificationBadge classification={document.classification} documentType={document.document_type} />
-                    </td>
-                    <td className="px-4 py-3"><Badge variant={statusColors[document.status] || 'muted'}>{document.status || 'unknown'}</Badge></td>
-                    <td className="px-4 py-3">
-                      {typeof document.similarity === 'number' ? (
-                        <Badge variant="default" className="bg-purple-50 text-purple-700 border border-purple-200">
-                          Sim: {(document.similarity * 100).toFixed(1)}%
-                        </Badge>
-                      ) : (
-                        <span>{safeFloat((document.confidence || {}).overall)?.toFixed(2) || 'N/A'}</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">{formatDate(document.upload_time)}</td>
-                    <td className="px-4 py-3"><Link className="font-medium text-blue-700 hover:underline" to={`/documents/${document.document_id}`}>Open</Link></td>
-                  </tr>
-                ))}
+                {filteredDocuments.map((document) => {
+                  const docCat = document.category || (document.extracted_fields || {}).category || (document.classification && document.classification.category) || 'General'
+                  return (
+                    <tr key={document.document_id} className="hover:bg-slate-50">
+                      <td className="px-4 py-3 font-medium text-slate-900">
+                        <div>{document.filename}</div>
+                        {document.excerpts && document.excerpts.length > 0 && (
+                          <div
+                            className="mt-1 text-xs font-normal text-slate-500 max-w-md line-clamp-2 [&>mark]:bg-amber-100 [&>mark]:text-amber-900 [&>mark]:rounded [&>mark]:px-0.5"
+                            dangerouslySetInnerHTML={{ __html: document.excerpts[0] }}
+                          />
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={cn('inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold', categoryColors[docCat] || categoryColors.General)}>
+                          {docCat}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <ClassificationBadge classification={document.classification} documentType={document.document_type} />
+                      </td>
+                      <td className="px-4 py-3"><Badge variant={statusColors[document.status] || 'muted'}>{(document.status || 'unknown').replace(/_/g, ' ')}</Badge></td>
+                      <td className="px-4 py-3">
+                        {typeof document.similarity === 'number' ? (
+                          <Badge variant="default" className="bg-purple-50 text-purple-700 border border-purple-200">
+                            Sim: {(document.similarity * 100).toFixed(1)}%
+                          </Badge>
+                        ) : (
+                          <span>{safeFloat((document.confidence || {}).overall)?.toFixed(2) || 'N/A'}</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">{formatDate(document.upload_time)}</td>
+                      <td className="px-4 py-3"><Link className="font-medium text-blue-700 hover:underline" to={`/documents/${document.document_id}`}>Open</Link></td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           )}
@@ -2405,16 +2496,24 @@ function DocumentDetailPage() {
 
       <div className="grid gap-6 xl:grid-cols-[1.4fr_0.6fr]">
         <Card>
-          <CardHeader>
-            <CardTitle>Extracted fields</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <span>Extracted fields</span>
+              <span className={cn('text-xs font-semibold px-2.5 py-0.5 rounded-full border', categoryColors[document.category || (document.extracted_fields || {}).category || 'General'] || categoryColors.General)}>
+                {document.category || (document.extracted_fields || {}).category || 'General'}
+              </span>
+            </CardTitle>
+            <ClassificationBadge classification={document.classification} documentType={document.document_type} />
           </CardHeader>
           <CardContent>
             <div className="field-grid">
-              {Object.entries(document.extracted_fields || {}).filter(([key]) => key !== 'document_type').map(([key, value]) => (
-                <div key={key} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{key.replace('_', ' ')}</div>
-                  <div className="mt-2 text-sm font-medium text-slate-900">{value || 'Not available'}</div>
-                </div>
+              {Object.entries(document.extracted_fields || {})
+                .filter(([key]) => key !== 'document_type' && key !== 'category')
+                .map(([key, value]) => (
+                  <div key={key} className="rounded-xl border border-slate-200 bg-slate-50 p-3 hover:border-slate-300 transition-colors">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">{key.replace(/_/g, ' ')}</div>
+                    <div className="mt-1.5 text-sm font-semibold text-slate-900 break-words">{value || <span className="text-slate-400 font-normal italic">Not available</span>}</div>
+                  </div>
               ))}
             </div>
           </CardContent>
@@ -2422,24 +2521,32 @@ function DocumentDetailPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Metadata</CardTitle>
+            <CardTitle>Metadata & Classification</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-slate-700">
             <div className="flex justify-between items-center">
+              <span>Domain category</span>
+              <span className={cn('inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold', categoryColors[document.category || (document.extracted_fields || {}).category || 'General'] || categoryColors.General)}>
+                {document.category || (document.extracted_fields || {}).category || 'General'}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
               <span>Document type</span>
-              <span className="font-medium text-slate-900 capitalize">{document.document_type || 'unknown'}</span>
+              <span className="font-semibold text-slate-900 capitalize">{(document.document_type || 'unknown').replace(/_/g, ' ')}</span>
             </div>
             <div className="flex justify-between items-center">
               <span>Classification</span>
               <ClassificationBadge classification={document.classification} documentType={document.document_type} />
             </div>
             <div className="flex justify-between items-center">
-              <span>Model</span>
-              <span className="font-mono text-xs text-slate-800">{document.classification?.model || 'None (Heuristic)'}</span>
+              <span>Model engine</span>
+              <span className="font-mono text-xs text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                {document.classification?.model || 'tfidf-logistic-regression:1.0.0'}
+              </span>
             </div>
             <div className="flex justify-between items-center">
               <span>Model confidence</span>
-              <span className="font-medium text-slate-900">
+              <span className="font-semibold text-indigo-700">
                 {typeof document.classification?.confidence === 'number'
                   ? `${(document.classification.confidence * 100).toFixed(1)}%`
                   : 'N/A (Heuristic)'}
@@ -2447,19 +2554,52 @@ function DocumentDetailPage() {
             </div>
             <div className="flex justify-between items-center">
               <span>Status</span>
-              <Badge variant={statusColors[document.status] || 'muted'}>{document.status || 'unknown'}</Badge>
+              <Badge variant={statusColors[document.status] || 'muted'}>{(document.status || 'unknown').replace(/_/g, ' ')}</Badge>
             </div>
             <div className="flex justify-between items-center">
               <span>Uploaded</span>
               <span className="font-medium text-slate-900">{formatDate(document.upload_time)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span>Extraction confidence</span>
-              <span className="font-medium text-slate-900">{safeFloat((document.confidence || {}).overall)?.toFixed(2) || 'N/A'}</span>
+              <span>Quality score</span>
+              <span className="font-medium text-emerald-700">{safeFloat((document.confidence || {}).overall)?.toFixed(2) || 'N/A'}</span>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {document.workflow && (
+        <Card className="mt-6">
+          <CardHeader className="pb-3 flex flex-row items-center justify-between">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Sliders className="h-4 w-4 text-blue-600" />
+              <span>Automated Workflow Evaluation</span>
+            </CardTitle>
+            <Badge variant={statusColors[document.workflow.final_status] || 'default'}>
+              Workflow Status: {(document.workflow.final_status || document.status || '').replace(/_/g, ' ')}
+            </Badge>
+          </CardHeader>
+          <CardContent className="space-y-2 text-xs">
+            {document.workflow.triggered_rules && document.workflow.triggered_rules.length > 0 ? (
+              <div className="space-y-2">
+                {document.workflow.triggered_rules.map((rule, idx) => (
+                  <div key={idx} className="flex items-start justify-between rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+                    <div>
+                      <div className="font-semibold text-slate-800">{rule.name || rule.rule_id}</div>
+                      <div className="text-slate-500 mt-0.5">{rule.description || 'Workflow rule condition evaluated successfully.'}</div>
+                    </div>
+                    <Badge variant="warning" className="shrink-0 text-[10px]">
+                      {(rule.target_status || 'flagged').replace(/_/g, ' ')}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-slate-500 py-1">No special risk thresholds triggered; automated standard path applied.</div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       <DocumentQAPanel documentId={documentId} filename={document.filename} searchStatus={searchStatus} />
 
@@ -2469,11 +2609,13 @@ function DocumentDetailPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="field-grid">
-            {Object.entries(corrections).filter(([key]) => key !== 'document_type').map(([key, value]) => (
-              <div key={key}>
-                <label className="mb-1.5 block text-sm font-medium text-slate-700">{key.replace('_', ' ')}</label>
-                <Input value={value || ''} onChange={(event) => setCorrections((current) => ({ ...current, [key]: event.target.value }))} />
-              </div>
+            {Object.entries(corrections)
+              .filter(([key]) => key !== 'document_type' && key !== 'category')
+              .map(([key, value]) => (
+                <div key={key}>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">{key.replace(/_/g, ' ')}</label>
+                  <Input value={value || ''} onChange={(event) => setCorrections((current) => ({ ...current, [key]: event.target.value }))} />
+                </div>
             ))}
           </div>
           <Button onClick={handleSaveCorrections} disabled={saving}>{saving ? 'Saving...' : 'Save corrections'}</Button>
