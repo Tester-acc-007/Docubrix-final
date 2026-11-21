@@ -51,8 +51,8 @@ def _match_first(pattern: str, text: str, dotall: bool = False) -> str:
 
 
 def _extract_amounts(text: str) -> list[str]:
-    # Match amounts with currency symbols and comma separators
-    return [m.group(0).strip() for m in re.finditer(r"[\$₹€£]?\s?\d+(?:,\d{3})*(?:\.\d+)?", text)]
+    # Match amounts with currency symbols (USD, INR, EUR, GBP, Rs) and Indian/Western comma separators
+    return [m.group(0).strip() for m in re.finditer(r"(?:[\$₹€£]|INR|Rs\.?)\s?\d+(?:,\d{2,3})*(?:\.\d+)?|\b\d+(?:,\d{2,3})*(?:\.\d+)?", text)]
 
 
 def _extract_dates(text: str) -> list[str]:
@@ -258,10 +258,10 @@ def _extract_receipt_merchant(text: str) -> str:
 def _extract_total_amount(text: str, amounts: list[str]) -> str:
     # 1. Search line by line for explicit total labels (avoiding Subtotal)
     labeled_patterns = [
-        r"\b(?:grand\s*total|total\s*due|amount\s*due|balance\s*due|net\s*payable|total\s*payable)\b\s*[:\-]?\s*[\$₹€£]?\s*([0-9]+(?:,[0-9]{3})*(?:\.[0-9]+)?)",
-        r"\b(?:total\s*amount|final\s*amount)\b\s*[:\-]?\s*[\$₹€£]?\s*([0-9]+(?:,[0-9]{3})*(?:\.[0-9]+)?)",
-        r"(?<!sub)\btotal\b\s*[:\-]?\s*[\$₹€£]?\s*([0-9]+(?:,[0-9]{3})*(?:\.[0-9]+)?)",
-        r"\bamount\s*due\b\s*[:\-]?\s*[\$₹€£]?\s*([0-9]+(?:,[0-9]{3})*(?:\.[0-9]+)?)",
+        r"\b(?:grand\s*total|total\s*due|amount\s*due|balance\s*due|net\s*payable|total\s*payable)\b\s*[:\-]?\s*(?:[\$₹€£]|INR|Rs\.?)?\s*([0-9]+(?:,[0-9]{2,3})*(?:\.[0-9]+)?)",
+        r"\b(?:total\s*amount|final\s*amount)\b\s*[:\-]?\s*(?:[\$₹€£]|INR|Rs\.?)?\s*([0-9]+(?:,[0-9]{2,3})*(?:\.[0-9]+)?)",
+        r"(?<!sub)\btotal\b\s*[:\-]?\s*(?:[\$₹€£]|INR|Rs\.?)?\s*([0-9]+(?:,[0-9]{2,3})*(?:\.[0-9]+)?)",
+        r"\bamount\s*due\b\s*[:\-]?\s*(?:[\$₹€£]|INR|Rs\.?)?\s*([0-9]+(?:,[0-9]{2,3})*(?:\.[0-9]+)?)",
     ]
     for p in labeled_patterns:
         m = re.search(p, text, re.I)

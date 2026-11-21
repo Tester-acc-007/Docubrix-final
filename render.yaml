@@ -3,6 +3,7 @@ services:
   - type: web
     name: docubrix-api
     runtime: docker
+    region: singapore
     plan: free
     dockerfilePath: ./backend/Dockerfile
     dockerContext: .
@@ -19,6 +20,7 @@ services:
   - type: web
     name: docubrix-frontend
     runtime: static
+    region: singapore
     buildCommand: npm --prefix frontend install && npm --prefix frontend run build
     staticPublishPath: ./frontend/dist
     routes:

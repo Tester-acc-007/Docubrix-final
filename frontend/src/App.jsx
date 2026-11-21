@@ -164,24 +164,24 @@ function LandingPage({ user }) {
 
   const domainSamples = {
     financial: {
-      name: 'Vendor Invoice #INV-2026-9810',
+      name: 'Tax Invoice #INV-2026-9810',
       domain: 'Financial',
       color: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
       accent: 'emerald',
-      ruleBadge: 'Requires CFO Sign-Off (> $3,000 threshold)',
+      ruleBadge: 'Requires Financial Sign-Off (> ₹1,00,000 threshold)',
       ruleColor: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
       confidence: '98.2%',
-      summary: 'Commercial cloud infrastructure invoice from Apex Cloud Systems Corp. for quarterly compute and database services.',
+      summary: 'Commercial cloud infrastructure invoice from Apex Cloud Systems India Pvt. Ltd. (Connaught Place, New Delhi).',
       fields: [
         { label: 'Invoice No.', value: 'INV-2026-9810' },
-        { label: 'Vendor Name', value: 'Apex Cloud Systems Corp.' },
-        { label: 'Total Amount', value: '$4,250.00 USD' },
-        { label: 'Tax / VAT (10%)', value: '$425.00 USD' },
-        { label: 'Billing Period', value: 'Q3 2026' },
+        { label: 'Vendor Name', value: 'Apex Cloud Systems India Pvt. Ltd.' },
+        { label: 'Total Amount', value: '₹3,45,000.00' },
+        { label: 'GST (18% IGST)', value: '₹52,627.00' },
+        { label: 'GSTIN (Delhi)', value: '07AAACD1234A1Z5' },
         { label: 'Due Date', value: 'December 15, 2026' },
       ],
       aiQuestion: 'What is the total due and does this require manual approval?',
-      aiAnswer: 'The total invoice amount is $4,250.00 USD due on Dec 15, 2026. Because this exceeds the $3,000 spend threshold rule, DocuBrix has routed it to the Review Queue for CFO sign-off [Page 1, Line 18].',
+      aiAnswer: 'The total invoice amount is ₹3,45,000.00 INR due on Dec 15, 2026. Because this exceeds the ₹1,00,000 spend threshold rule, DocuBrix has routed it to the Review Queue for financial supervisor sign-off [Page 1, Line 18].',
     },
     academic: {
       name: 'Official Academic Transcript & Grade Report',
@@ -191,17 +191,17 @@ function LandingPage({ user }) {
       ruleBadge: 'Auto-Verified (University Registrar Seal Validated)',
       ruleColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
       confidence: '99.1%',
-      summary: 'Undergraduate academic grade card and verified cumulative performance transcript from accredited institute.',
+      summary: 'Undergraduate academic grade card and verified cumulative performance transcript from National Institute of Technology, New Delhi.',
       fields: [
         { label: 'Student Name', value: 'Alex Morgan' },
         { label: 'Enrollment No.', value: 'ENR-2024-88410' },
-        { label: 'Programme', value: 'B.S. Computer Science (Semester VII)' },
-        { label: 'Cumulative CGPA', value: '3.92 / 4.0' },
-        { label: 'Institution', value: 'National Institute of Technology' },
+        { label: 'Programme', value: 'B.Tech. Computer Science (Semester VII)' },
+        { label: 'Cumulative CGPA', value: '9.15 / 10.0' },
+        { label: 'Institution', value: 'National Institute of Technology, Delhi' },
         { label: 'Registrar Seal', value: 'Cryptographically Verified' },
       ],
       aiQuestion: 'What is the student\'s CGPA and enrollment status?',
-      aiAnswer: 'Student Alex Morgan (Enrollment ENR-2024-88410) has a cumulative CGPA of 3.92/4.0 in B.S. Computer Science Semester VII. The official seal was validated with 99.1% confidence [Page 1, Table 2].',
+      aiAnswer: 'Student Alex Morgan (Enrollment ENR-2024-88410) has a cumulative CGPA of 9.15/10.0 in B.Tech Computer Science Semester VII. The official seal was validated with 99.1% confidence [Page 1, Table 2].',
     },
     medical: {
       name: 'Specialist Clinical Prescription & Lab Rx',
@@ -211,14 +211,14 @@ function LandingPage({ user }) {
       ruleBadge: 'Active PHI Shield (Patient Identifiers Redacted)',
       ruleColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
       confidence: '97.8%',
-      summary: 'Outpatient clinical diagnosis, vitals, and prescribed pharmaceutical regimen from Metro Specialty Clinic.',
+      summary: 'Outpatient clinical diagnosis, vitals, and prescribed pharmaceutical regimen from Apollo Specialty Hospital, Sarita Vihar, New Delhi.',
       fields: [
         { label: 'Prescribing Physician', value: 'Dr. A. K. Sharma, MD' },
-        { label: 'Medical License', value: 'DMC-REG-2018-9941' },
+        { label: 'Medical Council Reg.', value: 'DMC-REG-2018-9941 (Delhi)' },
         { label: 'Prescription Code', value: 'RX-2026-7741' },
         { label: 'Medication', value: 'Amoxicillin 500mg (TID x 7d)' },
         { label: 'Patient Identity', value: '[REDACTED - HIPAA Guard]' },
-        { label: 'Storage Mode', value: 'Encrypted Security Vault' },
+        { label: 'Hospital Facility', value: 'Sarita Vihar, New Delhi - 110076' },
       ],
       aiQuestion: 'What medication is prescribed and are patient details safe?',
       aiAnswer: 'Prescription RX-2026-7741 authorizes Amoxicillin 500mg, 1 tablet TID for 7 days. All patient PII has been automatically redacted and stored under HIPAA vault rules [Page 1, Box B].',
@@ -231,17 +231,17 @@ function LandingPage({ user }) {
       ruleBadge: 'Flagged: Pending Legal Counsel Counter-Signature',
       ruleColor: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
       confidence: '96.5%',
-      summary: 'Bilateral confidentiality and intellectual property agreement governing proprietary software disclosures.',
+      summary: 'Bilateral confidentiality and intellectual property agreement governing proprietary software disclosures in Delhi-NCR.',
       fields: [
         { label: 'Document Type', value: 'Bilateral Mutual NDA' },
-        { label: 'Disclosing Party', value: 'DocuBrix Technologies Ltd.' },
-        { label: 'Receiving Party', value: 'Enterprise Partner LLC' },
+        { label: 'Disclosing Party', value: 'DocuBrix Technologies Pvt. Ltd., New Delhi' },
+        { label: 'Receiving Party', value: 'Enterprise Infotech India Pvt. Ltd., Gurugram' },
         { label: 'Confidentiality Term', value: '36 Months from Execution' },
-        { label: 'Governing Law', value: 'High Court of Delhi, New Delhi' },
+        { label: 'Governing Law', value: 'High Court of Delhi, New Delhi, India' },
         { label: 'Signature Audit', value: 'Party 1 Signed, Party 2 Pending' },
       ],
       aiQuestion: 'What is the confidentiality term and governing law?',
-      aiAnswer: 'The NDA defines a 3-year (36 months) non-disclosure obligation under the jurisdiction of the High Court of Delhi. Counter-signature by Receiving Party is pending review [Page 3, Section 8].',
+      aiAnswer: 'The NDA defines a 3-year (36 months) non-disclosure obligation under the exclusive jurisdiction of the High Court of Delhi, India. Counter-signature by Receiving Party is pending review [Page 3, Section 8].',
     },
     administrative: {
       name: 'Executive Office Circular #ADM-2026-108',
@@ -251,17 +251,17 @@ function LandingPage({ user }) {
       ruleBadge: 'Auto-Indexed to Knowledge Base & Broadcast',
       ruleColor: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
       confidence: '98.7%',
-      summary: 'Executive operational circular regarding department compliance standards, review schedules, and formatting.',
+      summary: 'Executive operational circular regarding department compliance standards, review schedules, and formatting from Central Secretariat, New Delhi.',
       fields: [
         { label: 'Circular Ref', value: 'ADM/2026/CIR-108' },
-        { label: 'Issuing Authority', value: 'Office of General Administration' },
+        { label: 'Issuing Authority', value: 'Central Administrative Secretariat, New Delhi' },
         { label: 'Target Audience', value: 'Department Heads & Operational Units' },
         { label: 'Subject Matter', value: 'Operational Evaluation Protocol' },
         { label: 'Effective Date', value: 'Immediate Effect (Nov 2026)' },
-        { label: 'Distribution', value: 'Corporate Intranet Broadcast' },
+        { label: 'Distribution', value: 'Delhi-NCR Departmental Broadcast' },
       ],
       aiQuestion: 'Who issued this circular and what are the main deadlines?',
-      aiAnswer: 'Circular ADM/2026/CIR-108 was issued by the Office of General Administration, mandating operational compliance standards and project review timetables [Page 1, Item 4].',
+      aiAnswer: 'Circular ADM/2026/CIR-108 was issued by the Central Administrative Secretariat, New Delhi, mandating operational compliance standards and review timetables [Page 1, Item 4].',
     },
   }
 
@@ -1045,25 +1045,25 @@ function DashboardPage() {
 const DEMO_PRESETS = [
   {
     id: 'financial',
-    label: 'Sample Invoice ($4,250)',
+    label: 'Sample Tax Invoice (₹4,59,000)',
     icon: '📄',
     badge: 'Financial',
     badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
     filename: 'Sample_Invoice_INV2026.txt',
     text: `TAX INVOICE
-TechCorp Solutions Inc.
-100 Enterprise Way, Suite 400, San Francisco, CA
+TechCorp Solutions India Pvt. Ltd.
+DLF Cyber City, Building 10, Tower B, Gurugram, Delhi-NCR - 122002
 Invoice No: INV-2026-9041
 Invoice Date: 2026-11-18
 Due Date: 2026-12-18
-Bill To: Global Logistics Enterprise
+Bill To: Global Logistics India Pvt. Ltd., Okhla Phase III, New Delhi - 110020
 
 Description: Cloud Infrastructure & AI Pipeline Hosting Services
-Amount: $4,250.00
-Tax Due: $340.00
-Total Due: $4,590.00
+Amount: ₹4,25,000.00
+Tax Due: ₹34,000.00
+Total Due: ₹4,59,000.00
 Payment Terms: Net 30
-Vendor Contact: accounts@techcorp-solutions.com
+Vendor Contact: accounts@techcorp-solutions.in
 GSTIN: 07AAAAA0000A1Z5`,
   },
   {
@@ -1073,14 +1073,15 @@ GSTIN: 07AAAAA0000A1Z5`,
     badge: 'Academic',
     badgeClass: 'bg-blue-50 text-blue-700 border-blue-200',
     filename: 'Sample_Academic_Transcript.txt',
-    text: `NATIONAL INSTITUTE OF TECHNOLOGY & SCIENCES
+    text: `NATIONAL INSTITUTE OF TECHNOLOGY, DELHI
 CAMPUS REGISTRAR & ACADEMIC EVALUATION DIVISION
+Narela Sub-City, Delhi - 110040
 ACADEMIC TRANSCRIPT / GRADE REPORT
 Date: 2026-11-15
 
 Candidate Name: Alex Morgan
 Enrollment No: 02219051720
-University: National Institute of Technology & Sciences
+University: National Institute of Technology, Delhi
 Course: Bachelor of Technology (B.Tech) - Computer Science
 Semester: VII (Academic Year 2026)
 
@@ -1103,14 +1104,14 @@ Result: Passed with Distinction`,
     badgeClass: 'bg-rose-50 text-rose-700 border-rose-200',
     filename: 'Sample_Prescription_Apollo.txt',
     text: `APOLLO HOSPITALS ENTERPRISE LTD.
-Hospital: Apollo Specialty Clinic, Cardiology & Internal Medicine
+Hospital: Apollo Specialty Hospital, Sarita Vihar, Delhi Mathura Road, New Delhi - 110076
 Date: 2026-11-15
 PRESCRIPTION & CLINICAL SUMMARY
 
 Patient Name: Rajesh Sharma
 Age: 52 years / Male
 Patient ID: MED-2026-77821
-Doctor: Dr. Arvind Mehra, MD (Cardiology)
+Doctor: Dr. Arvind Mehra, MD (Cardiology) - DMC Reg. No. 48821
 
 Diagnosis: Primary Hypertension & Mild Dyslipidemia
 Vitals: BP: 142/90 mmHg | Pulse: 78 bpm | SpO2: 98%
@@ -1133,13 +1134,13 @@ CONFIDENTIAL MEDICAL RECORD - PROTECTED HEALTH INFORMATION (PHI)`,
 Effective Date: 2026-11-10
 
 This Mutual Non-Disclosure Agreement is entered into on 2026-11-10, between:
-Disclosing Party: DocuBrix Technologies Pvt. Ltd., New Delhi, India
-Receiving Party: Horizon Ventures Inc., San Francisco, CA, USA.
+Disclosing Party: DocuBrix Technologies Pvt. Ltd., Barakhamba Road, Connaught Place, New Delhi - 110001
+Receiving Party: Horizon Ventures India Pvt. Ltd., Cyber City, Gurugram, Delhi-NCR - 122002
 
 1. Purpose: Strategic evaluation of document intelligence and workflow automation systems.
 2. Confidential Information: Technical designs, algorithms, architectures, and proprietary models.
 Term: The non-disclosure obligations shall survive for three (3) years from the Effective Date.
-Governing Law: This Agreement shall be construed in accordance with Delaware law.
+Governing Law: This Agreement shall be governed by and construed in accordance with the laws of India, and the parties submit to the exclusive jurisdiction of the Courts at New Delhi.
 
 Signed for Disclosing Party: Alex Morgan, Lead Engineer
 Signed for Receiving Party: Marcus Vance, Managing Partner`,
@@ -1151,7 +1152,7 @@ Signed for Receiving Party: Marcus Vance, Managing Partner`,
     badge: 'Administrative',
     badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',
     filename: 'Sample_Official_Notice.txt',
-    text: `CENTRAL REGISTRATION & ADMINISTRATIVE COUNCIL
+    text: `CENTRAL REGISTRATION & ADMINISTRATIVE SECRETARIAT
 OFFICE OF THE REGISTRAR / GENERAL ADMINISTRATION
 Sector 4, Business District, New Delhi - 110001
 OFFICE MEMORANDUM / OFFICIAL NOTICE
@@ -1173,8 +1174,8 @@ Registrar / Joint Secretary`,
     badgeClass: 'bg-slate-50 text-slate-700 border-slate-200',
     filename: 'Sample_Candidate_Resume.txt',
     text: `ALEX MORGAN
-Email: alex.morgan@example.com | Phone: +1 (555) 019-2834 | GitHub: github.com/alexmorgan-dev
-LinkedIn: linkedin.com/in/alexmorgan
+Location: New Delhi, India | Email: alex.morgan@example.com | Phone: +91 98101 23456
+GitHub: github.com/alexmorgan-dev | LinkedIn: linkedin.com/in/alexmorgan
 
 PROFESSIONAL SUMMARY
 Full Stack Software Engineer with expertise in building FastAPI microservices, React single-page applications, and document intelligence workflows.
@@ -1189,8 +1190,8 @@ Software Engineering Intern — Cloud Automation Labs (2025 - Present)
 • Implemented JWT token security with role-based access control.
 
 EDUCATION
-Bachelor of Science in Computer Science & Automation
-GPA: 3.9 / 4.0 (2022 - 2026)`,
+Bachelor of Technology in Computer Science & Automation, New Delhi
+CGPA: 8.85 / 10.0 (2022 - 2026)`,
   },
 ]
 
