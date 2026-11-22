@@ -2031,7 +2031,7 @@ function ChatPage() {
     } catch (err) {
       const status = err.response?.status
       const detail = err.response?.data?.detail || err.message || 'An error occurred while communicating with DocuBrix AI.'
-      if (status === 503) {
+      if (status === 503 && (detail.toLowerCase().includes('not configured') || detail.toLowerCase().includes('gemini_api_key'))) {
         setChatError('DocuBrix AI Assistant is offline because GEMINI_API_KEY is not configured on the backend.')
       } else {
         setChatError(detail)
@@ -2325,7 +2325,7 @@ function ChatPage() {
                   <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900 flex items-start gap-2.5">
                     <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
                     <div>
-                      <div className="font-semibold">Assistant Unavailable</div>
+                      <div className="font-semibold">Assistant Notice</div>
                       <div className="mt-0.5 leading-relaxed">{chatError}</div>
                     </div>
                   </div>

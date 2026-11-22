@@ -52,8 +52,10 @@ from backend.app.services.knowledge import (
     extract_excerpts,
     extract_highlighted_snippet,
     generate_chat_answer,
+    generate_extractive_fallback,
     generate_grounded_answer,
     get_embedding,
+    is_conversational_greeting,
     is_embedding_configured,
     is_llm_configured,
     query_terms,
@@ -832,7 +834,8 @@ def ask_document(document_id: str, payload: dict[str, Any], user: User = Depends
     try:
         answer = generate_grounded_answer(question, sources)
     except RuntimeError as exc:
-        raise HTTPException(status_code=503, detail=str(exc)) from exc
+        logger.warning("[Gemini Diagnostic] Document Q&A generative model failed (%s). Using grounded extractive fallback.", exc)
+        answer = generate_extractive_fallback(question, sources)
 
     return {"answer": answer, "sources": sources}
 
@@ -1221,16 +1224,19 @@ def send_chat_message(conversation_id: str, payload: dict[str, Any], user: User 
         # Rank relevant chunks across the user's documents
         sources = rank_chunks_by_relevance(content, candidate_chunks, filename_map=filename_map, top_k=5)
 
-        # Generate grounded response with Gemini
+        # Generate grounded response with Gemini or intelligent fallback
         try:
-            answer = generate_chat_answer(content, sources, chat_history=chat_history)
+            if is_conversational_greeting(content) and not sources:
+                answer = generate_extractive_fallback(content, sources)
+            else:
+                answer = generate_chat_answer(content, sources, chat_history=chat_history)
         except RuntimeError as exc:
-            logger.error(
-                "[Gemini Diagnostic] Assistant generation failed for conversation %s: %s",
+            logger.warning(
+                "[Gemini Diagnostic] Assistant generation failed for conversation %s: %s. Using grounded extractive fallback.",
                 conv.id,
                 exc,
             )
-            raise HTTPException(status_code=503, detail=str(exc)) from exc
+            answer = generate_extractive_fallback(content, sources)
 
         # Save assistant message with retrieved sources
         assistant_msg = ChatMessage(
